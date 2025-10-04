@@ -3,7 +3,7 @@ import io
 import datetime
 import numpy as np
 import librosa
-
+import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -53,11 +53,12 @@ def _analyze_audio(file_obj):
 def recording_create(request):
     """Accept multipart/form-data POST with 'audio_file', optional 'device_id' and 'timestamp'."""
     if request.method != 'POST':
-        return JsonResponse({'error': 'method not allowed'}, status=405)
+        return JsonResponse({'error': 'method not allowed'}, status=405)    
+    # Check which files were uploaded
 
-    audio = request.FILES.get('audio_file')
-    device_id = request.POST.get('device_id')
-    timestamp_raw = request.POST.get('timestamp')
+    audio = request.FILES.get('file')
+    device_id = request.POST.get('device_id') #TODO
+    timestamp_raw = request.POST.get('timestamp') #TODO
 
     if not audio:
         return JsonResponse({'error': 'audio_file is required'}, status=400)

@@ -8,7 +8,7 @@ SECRET_KEY = 'change-me-in-production'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Applications
 INSTALLED_APPS = [
