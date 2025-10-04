@@ -3,6 +3,7 @@ import io
 import datetime
 import numpy as np
 import librosa
+import random
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -94,3 +95,49 @@ def recording_create(request):
         'analysis': rec.analysis,
         'is_drone_suspicious': rec.is_drone_suspicious
     })
+
+
+def recording_list(request):
+    """Returns a list of all recordings in the database."""
+    recordings = Recording.objects.all().order_by('-created_at')
+    data = [{
+        'id': rec.id,
+        'device_id': rec.device_id,
+        'timestamp': rec.timestamp,
+        'audio_url': rec.audio_file.url if rec.audio_file else '',
+        'created_at': rec.created_at,
+        'analysis': rec.analysis,
+        'is_drone_suspicious': rec.is_drone_suspicious,
+    } for rec in recordings]
+    return JsonResponse(data, safe=False)
+
+
+def get_alerts(request):
+    """
+    Returns the last 10 recordings formatted as alerts.
+    """
+    recordings = Recording.objects.order_by('-created_at')[:10]
+    
+    alerts = []
+    for rec in recordings:
+        # Determine alert type
+        if rec.is_drone_suspicious:
+            alert_type = "ALARM"
+        else:
+            alert_type = "NEW_FLIGHT"
+
+        # Generate a flightId - using recording ID to ensure some uniqueness
+        flight_id = 10000000 + rec.id
+
+        # Convert timestamp to Unix format
+        unix_timestamp = int(rec.timestamp.timestamp()) if rec.timestamp else int(rec.created_at.timestamp())
+
+        alert = {
+            "flightId": flight_id,
+            "timestamp": unix_timestamp,
+            "type": alert_type,
+            "location": [52.237049, 21.017532]  # Placeholder location
+        }
+        alerts.append(alert)
+        
+    return JsonResponse(alerts, safe=False)
