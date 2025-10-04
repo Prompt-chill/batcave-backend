@@ -27,3 +27,21 @@ python manage.py runserver
 API (minimal)
 - POST /api/recordings/ - multipart/form-data with `audio_file` (file) and optional `device_id` (string) and `timestamp` (ISO8601). Returns JSON with saved record id.
 # batcave-backend
+
+
+## Audio Processing Dependencies
+
+This project uses **pydub** to handle audio files.  
+To enable full audio processing (reading metadata, format conversion, etc.), your system must have **ffmpeg** installed and available in your PATH.
+
+### Installation
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install ffmpeg
+```
+**macOS(Homebrew):**
+```bash
+brew install ffmpeg
+```

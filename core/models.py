@@ -9,6 +9,8 @@ class Recording(models.Model):
     # simple analysis results stored as JSON (models.JSONField is DB-agnostic)
     analysis = models.JSONField(blank=True, null=True, default=dict)
     is_drone_suspicious = models.BooleanField(default=False)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return f"Recording {self.id} from {self.device_id or 'unknown'}"
